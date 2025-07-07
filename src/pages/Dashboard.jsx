@@ -2,21 +2,31 @@ import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
 import { getMovies, deleteMovie } from "../services/movie";
+import API from "../services/api"; // ✅ Import your API instance here
 import { Trash2, Pencil, Menu } from "lucide-react";
-import axios from "axios";
 
 const MovieCard = ({ movie, onDelete, onEdit }) => (
   <div className="bg-[#1a1a1a] rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
     {movie.poster && (
-      <img src={movie.poster} alt={movie.title} className="w-full h-64 object-cover" />
+      <img
+        src={movie.poster}
+        alt={movie.title}
+        className="w-full h-64 object-cover"
+      />
     )}
     <div className="p-5 flex flex-col justify-between flex-1">
       <div>
         <h3 className="text-xl font-semibold mb-2">{movie.title}</h3>
-        <p className="text-sm text-gray-400 mb-1">🎯 Public: {movie.public ? "Yes" : "No"}</p>
-        <p className="text-sm text-gray-400 mb-2">⭐ Rating: {movie.rating || "N/A"}</p>
+        <p className="text-sm text-gray-400 mb-1">
+          🎯 Public: {movie.public ? "Yes" : "No"}
+        </p>
+        <p className="text-sm text-gray-400 mb-2">
+          ⭐ Rating: {movie.rating || "N/A"}
+        </p>
         {movie.review && (
-          <p className="text-sm text-gray-500 italic mt-2">"{movie.review}"</p>
+          <p className="text-sm text-gray-500 italic mt-2">
+            "{movie.review}"
+          </p>
         )}
       </div>
       <div className="flex justify-end gap-3 mt-5">
@@ -44,7 +54,6 @@ const Dashboard = ({ username }) => {
   const [isPublic, setIsPublic] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const token = localStorage.getItem("token");
 
   const fetchMovies = async () => {
     setLoading(true);
@@ -65,10 +74,9 @@ const Dashboard = ({ username }) => {
 
   const handleSave = async () => {
     try {
-      await axios.patch(
-        `http://localhost:5000/api/movies/${selectedMovie._id}/public`,
-        { public: isPublic },
-        { headers: { Authorization: `Bearer ${token}` } }
+      await API.patch(
+        `/movies/${selectedMovie._id}/public`,
+        { public: isPublic }
       );
       setSelectedMovie(null);
       fetchMovies();
@@ -93,8 +101,15 @@ const Dashboard = ({ username }) => {
   return (
     <div className="flex min-h-screen bg-black text-white">
       {/* Mobile Sidebar Overlay */}
-      <div className={`fixed inset-0 z-50 md:hidden ${isSidebarOpen ? "block" : "hidden"}`}>
-        <div className="absolute inset-0 bg-black opacity-50" onClick={toggleSidebar}></div>
+      <div
+        className={`fixed inset-0 z-50 md:hidden ${
+          isSidebarOpen ? "block" : "hidden"
+        }`}
+      >
+        <div
+          className="absolute inset-0 bg-black opacity-50"
+          onClick={toggleSidebar}
+        ></div>
         <div className="w-64 bg-gray-800 h-full">
           <Sidebar handleLogout={handleLogout} username={username} />
         </div>

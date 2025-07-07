@@ -27,7 +27,7 @@ const handleSubmit = async (e) => {
     setError("Registration failed. Try again.");
   }
 };
-
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-black px-4">

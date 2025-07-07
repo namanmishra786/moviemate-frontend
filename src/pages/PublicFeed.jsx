@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../services/api"; // ✅ Use your API instance
 import { Link } from "react-router-dom";
 
 const PublicFeed = () => {
@@ -9,7 +9,7 @@ const PublicFeed = () => {
   useEffect(() => {
     const fetchPublicFeed = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/movies/public-feed");
+        const res = await API.get("/movies/public-feed"); // ✅ Uses your baseURL
         setMovies(res.data);
       } catch (err) {
         console.error(err);
@@ -28,7 +28,9 @@ const PublicFeed = () => {
         {error && <p className="text-red-400 mb-4">{error}</p>}
 
         {movies.length === 0 ? (
-          <p className="text-gray-400">No public movies yet. Be the first to share yours!</p>
+          <p className="text-gray-400">
+            No public movies yet. Be the first to share yours!
+          </p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {movies.map((movie) => (
