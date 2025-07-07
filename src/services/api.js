@@ -1,10 +1,11 @@
 import axios from "axios";
 
+// ✅ Hardcode your Render URL directly here for testing
 const API = axios.create({
-  baseURL: `${process.env.REACT_APP_API_URL}/api`,
+  baseURL: "https://moviemate-beckend.onrender.com/api",
 });
 
-// Automatically attach JWT token if available
+// ✅ Attach JWT if available
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
