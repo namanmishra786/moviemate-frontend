@@ -70,5 +70,5 @@ PRs welcome! If you spot a bug or want to add a feature, feel free to fork and o
 
 <p>
 Made with ❤️ by Naman Mishra.<br/>
-Reach out: <a href="mailto:youremail@example.com">youremail@example.com</a>
+Reach out: <a href="namanmishra786cool@gmail.com">youremail@example.com</a>
 </p>
