@@ -2,6 +2,7 @@ import { useState } from "react";
 import { loginUser } from "../services/auth";
 import { useNavigate } from "react-router-dom";
 import { Mail, Lock } from "lucide-react";
+import {toast} from "react-toastify";
 
 const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -16,10 +17,11 @@ const Login = () => {
     e.preventDefault();
     try {
       const data = await loginUser(form); // ✅
-      localStorage.setItem("token", data.token); // ✅ save token
+      localStorage.setItem("token", data.token);
+       toast.success("Login succesful!")
       navigate("/dashboard");
     } catch (err) {
-      setError("Invalid credentials.");
+      toast.error("Invalid credentials!");
     }
   };
 

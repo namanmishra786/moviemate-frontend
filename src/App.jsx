@@ -2,6 +2,8 @@ import { Outlet } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import { jwtDecode } from "jwt-decode";
+import { ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"
 
 const App = () => {
   const token = localStorage.getItem("token");
@@ -18,6 +20,7 @@ const App = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    toast.info("Logged out successfully!");
     window.location.href = "/login";
   };
 
@@ -28,6 +31,7 @@ const App = () => {
         <Navbar username={username} />
         <main className="flex-1 pt-16 md:pl-60 p-6">
           <Outlet />
+          <ToastContainer/>
         </main>
       </div>
     </div>

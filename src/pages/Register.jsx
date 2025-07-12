@@ -2,6 +2,7 @@ import { useState } from "react";
 import { registerUser } from "../services/auth";
 import { useNavigate } from "react-router-dom";
 import { User, Mail, Lock } from "lucide-react";
+import { toast } from "react-toastify";
 
 const Register = () => {
   const [form, setForm] = useState({
@@ -21,10 +22,11 @@ const handleSubmit = async (e) => {
   e.preventDefault();
   try {
     const data = await registerUser(form);
-    localStorage.setItem("token", data.token); // ✅ Save token
+    localStorage.setItem("token", data.token);
+    toast.success(" Ragister successful!")// ✅ Save token
     navigate("/dashboard");
   } catch (err) {
-    setError("Registration failed. Try again.");
+    toast.error("Registration failed. Try again.");
   }
 };
   
