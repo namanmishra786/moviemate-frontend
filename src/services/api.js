@@ -4,7 +4,7 @@ import axios from "axios";
 const API = axios.create({
   baseURL: "https://moviemate-beckend.onrender.com/api",
 });
-
+ 
 // ✅ Attach JWT if available
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");

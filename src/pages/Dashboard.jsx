@@ -78,7 +78,20 @@ const Dashboard = ({ username }) => {
 
         {/* ✅ Main Content */}
         <main className="flex-1 pt-6 pl-4 md:pl-4 px-4 py-4">
-          <h2 className="text-3xl font-bold mb-6">🎬 My Watchlist</h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-3xl font-bold">🎬 My Watchlist</h2>
+            <button
+              onClick={() => {
+                const url = `${window.location.origin}/user/${username}`;
+                navigator.clipboard.writeText(url);
+                alert("📋 Public watchlist link copied!");
+              }}
+              className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 text-sm transition"
+            >
+              Share Watchlist 🔗
+            </button>
+          </div>
+
           {error && <p className="text-red-400 mb-4">{error}</p>}
           {loading ? (
             <p className="text-gray-400">Loading...</p>

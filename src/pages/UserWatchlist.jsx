@@ -1,86 +1,77 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Sidebar from "../components/Sidebar";
-import Navbar from "../components/Navbar";
-import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 
 const UserWatchlist = () => {
-  const { username: routeUsername } = useParams();
-  const [movies, setMovies] = useState([]);
-  const [error, setError] = useState("");
+  const { username } = useParams();
+  const lowercaseUsername = username?.toLowerCase();
 
-  const token = localStorage.getItem("token");
-  let localUsername = "";
-  if (token) {
-    try {
-      const decoded = jwtDecode(token);
-      localUsername = decoded.username || decoded.email || "";
-    } catch (err) {
-      console.error(err);
-    }
-  }
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    const fetchUserMovies = async () => {
+    const fetchMovies = async () => {
+      setLoading(true);
       try {
-        const res = await axios.get(`http://localhost:5000/api/movies/public/${routeUsername}`);
+        const res = await axios.get(
+          `https://moviemate-beckend.onrender.com/api/movies/public/${lowercaseUsername}`
+        );
         setMovies(res.data);
+        setError(false);
       } catch (err) {
-        console.error(err);
-        setError("Could not load this user's watchlist.");
+        console.error("❌ Error fetching public movies:", err);
+        setError(true);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchUserMovies();
-  }, [routeUsername]);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    window.location.href = "/login";
-  };
+    if (lowercaseUsername) fetchMovies();
+  }, [lowercaseUsername]);
 
   return (
-    <div className="flex min-h-screen bg-black text-white">
-      <Sidebar handleLogout={handleLogout} username={localUsername} />
-      <div className="flex flex-col flex-1">
-        <Navbar username={localUsername} />
-        <main className="flex-1 pt-16 md:pl-60 p-6">
-          <h2 className="text-3xl font-bold text-red-500 mb-4">
-            🎥 {routeUsername}'s Public Watchlist
-          </h2>
+    <div className="max-w-2xl mx-auto px-4 py-8">
+      <h1 className="text-2xl font-semibold mb-4">
+        🎥 {lowercaseUsername}'s Public Watchlist
+      </h1>
 
-          {error && <p className="text-red-400 mb-4">{error}</p>}
-
-          {movies.length === 0 ? (
-            <p className="text-gray-400">
-              This user hasn’t shared any movies yet.
-            </p>
-          ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {movies.map((movie) => (
-                <div
-                  key={movie._id}
-                  className="bg-[#1a1a1a] rounded-xl p-4 shadow-md"
-                >
-                  <img
-                    src={movie.poster || "https://via.placeholder.com/300x450"}
-                    alt={movie.title}
-                    className="w-full h-60 object-cover mb-3 rounded"
-                  />
-                  <h3 className="text-xl font-semibold">{movie.title}</h3>
-                  <p className="text-sm text-gray-400">📅 {movie.year}</p>
-                  {movie.review && (
-                    <p className="text-sm text-gray-500 italic mt-1">
-                      "{movie.review}"
-                    </p>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </main>
+      <div className="mb-6">
+        <button
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+          onClick={() => {
+            navigator.clipboard.writeText(window.location.href);
+          }}
+        >
+          🔗 Copy Shareable Link
+        </button>
       </div>
+
+      {loading ? (
+        <p className="text-gray-500">⏳ Loading watchlist...</p>
+      ) : error ? (
+        <p className="text-red-500">
+          ❌ Could not load this user's watchlist.
+        </p>
+      ) : movies.length === 0 ? (
+        <p className="text-gray-500">
+          👀 This user hasn’t added any public movies yet.
+        </p>
+      ) : (
+        <ul className="space-y-3">
+          {movies.map((movie) => (
+            <li
+              key={movie._id}
+              className="bg-white border p-4 rounded shadow"
+            >
+              <h2 className="text-lg font-semibold">🎬 {movie.title}</h2>
+              {movie.description && (
+                <p className="text-gray-600 mt-1">{movie.description}</p>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
